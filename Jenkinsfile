@@ -24,6 +24,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
+                    sh "docker rm -f cicd"
                     sh "docker run -d --name cicd -p 5000:5000 ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
                 }
             }
