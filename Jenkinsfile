@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        // Define environment variables if needed
+        DOCKER_IMAGE_NAME = 'hayati'
+        DOCKER_IMAGE_TAG = 'latest'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -11,24 +17,24 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                // Your build steps go here
-                echo 'Building the project...'
+                // Build the Docker image
+                script {
+                    docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}", "-f Dockerfile .")
+                }
             }
         }
 
-        stage('Test') {
+        stage('Run Docker Container') {
             steps {
-                // Your test steps go here
-                echo 'Running tests...'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Your deployment steps go here
-                echo 'Deploying the application...'
+                // Run the Docker container
+                script {
+                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").withRun('-p 8080:80') {
+                        // Any additional commands to run inside the Docker container
+                        echo 'Docker container is running!'
+                    }
+                }
             }
         }
     }
@@ -42,4 +48,3 @@ pipeline {
         }
     }
 }
-
