@@ -16,7 +16,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                   sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} -f Dockerfile ."
+                   sh "docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}") -f Dockerfile ."
                 }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    sh "docker run -d --name hayati -p 8080:80 ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} " {
+                    sh "docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").run('-p 8080:80 --name hayati') {
                         echo 'Docker container is running!'
                     }
                 }
