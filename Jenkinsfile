@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Define environment variables if needed
         DOCKER_IMAGE_NAME = 'hayati'
         DOCKER_IMAGE_TAG = 'latest'
     }
@@ -10,28 +9,22 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from Git
-                script {
-                    checkout scm
-                }
+                checkout scm
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                // Build the Docker image
                 script {
-                    docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}", "-f Dockerfile .")
+                   sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} "-f Dockerfile .")
                 }
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                // Run the Docker container
                 script {
-                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").withRun('-p 8080:80') {
-                        // Any additional commands to run inside the Docker container
+                    sh "docker run -d --name hayati -p 8080:80 ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} " {
                         echo 'Docker container is running!'
                     }
                 }
