@@ -1,0 +1,30 @@
+name: Build and Deploy
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build Docker Image
+      run: docker build -t cicd:latest .
+
+    - name: Delete Already made container
+      run: docker rm -f cicd_container
+
+    - name: Run Docker Container
+      run: docker run -d --name cicd_container -p 5000:5000 cicd:latest
