@@ -29,7 +29,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Pull image from private repo
-      run:  docker pull joel2kc/cicd:master-7436d8c
+      run:  docker pull joel2kc/cicd:latest
       
     - name: Delete Already made container
       run: docker rm -f cicd_container
