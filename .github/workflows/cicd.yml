@@ -34,4 +34,4 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/cicd:latest
           docker stop cicd || true
           docker rm cicd || true
-          docker run -d --name cicd -p 5000:5000 ${{ secrets.REGISTRY_USERNAME }}/cicd:latest
+          docker run -d --name cicd -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/cicd:latest
