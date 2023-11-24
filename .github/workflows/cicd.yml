@@ -3,32 +3,35 @@ name: Build and Deploy
 on: [push]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build Docker Image
+      run: |
+        docker build -t cicd:latest -f Dockerfile .
+        docker tag cicd:latest ${{ secrets.REGISTRY_USERNAME }}/cicd:latest
+        echo ${{ secrets.REGISTRY_PASSWORD }} | docker login -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+        docker push ${{ secrets.REGISTRY_USERNAME }}/cicd:latest
+
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Docker
-      uses: docker/setup-docker-action@v2
-      with:
-        dockerfile: Dockerfile  
-
-    - name: Build and Push Docker Image
-      run: |
-        docker build -t joel2kc/cicd:latest .
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-        docker push joel2kc/cicd:latest
-
-    - name: SSH into Server and Deploy
+    - name: Deploy to Server
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker pull joel2kc/cicd:latest
+          docker pull ${{ secrets.REGISTRY_USERNAME }}/cicd:latest
           docker stop cicd || true
           docker rm cicd || true
-          docker run -d --name cicd -p 5000:5000 joel2kc/cicd:latest
+          docker run -d --name cicd -p 5000:5000 ${{ secrets.REGISTRY_USERNAME }}/cicd:latest
