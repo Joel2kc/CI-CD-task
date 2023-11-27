@@ -30,7 +30,7 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SSH_PUBLIC_KEY }}
         script: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/cicd:latest
-          docker stop cicd || true
-          docker rm cicd || true
-          docker run -d --name cicd -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/cicd:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicd:latest
+          sudo docker stop cicd || true
+          sudo docker rm cicd || true
+          sudo docker run -d --name cicd -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/cicd:latest
