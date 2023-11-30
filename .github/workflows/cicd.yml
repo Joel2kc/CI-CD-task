@@ -23,11 +23,11 @@ jobs:
     - name: Build and push Docker image to ECR
       run: |
         # Your commands to build and push the Docker image
-        docker build -t your-ecr-repository:latest .
-        docker tag your-ecr-repository:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/your-ecr-repository:latest
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/your-ecr-repository:latest
+        docker build -t weatherapp-repo .
+        docker tag weatherapp-repo:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/weatherapp-repo:latest
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/weatherapp-repo:latest
 
     - name: Update ECS service
       run: |
         # Update your ECS service with the new image
-        aws ecs update-service --cluster your-ecs-cluster --service your-ecs-service --force-new-deployment
+        aws ecs update-service --cluster weatherapp-cluster --service weatherapp-service --force-new-deployment
