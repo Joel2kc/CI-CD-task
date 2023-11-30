@@ -23,6 +23,7 @@ jobs:
     - name: Build and push Docker image to ECR
       run: |
         # Your commands to build and push the Docker image
+        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
         docker build -t weatherapp-repo .
         docker tag weatherapp-repo:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/weatherapp-repo:latest
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/weatherapp-repo:latest
